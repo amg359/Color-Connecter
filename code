@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+
+    #generate-color-btn, #connect-color-btn {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .color-display {
+      margin: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      width: 100px;
+      height: 100px;
+      display: inline-block;
+    }
+
+    #code-display, #connected-color-display {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    #connect-color-input {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Color Connection App</h1>
+
+  <button id="generate-color-btn" onclick="generateColor()">Generate Your Color</button>
+  <div id="your-color-display" class="color-display" style="background-color: #ffffff;"></div>
+  <div id="code-display"></div>
+
+  <button id="connect-color-btn" onclick="connectWithCode()">Connect with Code</button>
+  <input type="text" id="connect-color-input" placeholder="Enter Friend's Code" style="display: none;">
+  <button onclick="validateAndConnect()">Connect</button>
+  <div id="connected-color-display" class="color-display" style="display: none;"></div>
+
+  <script>
+    let yourColor = '';
+    let yourCode = '';
+
+    function generateColor() {
+      yourColor = getRandomColor();
+      yourCode = generateCode();
+      updateColorDisplay('your-color-display', yourColor);
+      document.getElementById('code-display').textContent = `Your Code: ${yourCode}`;
+    }
+
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    function generateCode() {
+      return Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    }
+
+    function connectWithCode() {
+      document.getElementById('connect-color-input').style.display = 'inline-block';
+      document.getElementById('connect-color-input').focus();
+    }
+
+    function validateAndConnect() {
+      const friendCode = document.getElementById('connect-color-input').value;
+      if (/^\d{4}$/.test(friendCode) && friendCode !== yourCode) {
+        const connectedColor = getConnectedColor(friendCode);
+        updateColorDisplay('connected-color-display', connectedColor);
+        console.log(`Connected Color RGB: ${hexToRgb(connectedColor)}`);
+      } else {
+        alert('Please enter a valid 4-digit code that is not your own.');
+      }
+
+      // Reset the input field and hide it
+      document.getElementById('connect-color-input').value = '';
+      document.getElementById('connect-color-input').style.display = 'none';
+    }
+
+    function getConnectedColor(code) {
+      // For demonstration purposes, you can modify this function to retrieve the color associated with the given code
+      // In a real-world scenario, you might use a server/database to store and retrieve this information
+      // For now, it just generates a random color
+      return getRandomColor();
+    }
+
+    function hexToRgb(hex) {
+      hex = hex.replace(/^#/, '');
+      const bigint = parseInt(hex, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `${r}, ${g}, ${b}`;
+    }
+
+    function updateColorDisplay(elementId, color) {
+      const colorDisplay = document.getElementById(elementId);
+      colorDisplay.style.backgroundColor = color;
+      colorDisplay.textContent = `Color: ${color}`;
+    }
+  </script>
+</body>
+</html>
