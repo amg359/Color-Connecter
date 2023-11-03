@@ -62,6 +62,9 @@
       yourCode = generateCode();
       document.getElementById('color-display').style.backgroundColor = yourColor;
       document.getElementById('code-display').textContent = `Your Code: ${yourCode}`;
+
+      // Save the color information to local storage
+      localStorage.setItem(yourCode, yourColor);
     }
 
     function getRandomColor() {
@@ -85,25 +88,19 @@
 
     function validateAndConnect() {
       const friendCode = document.getElementById('connect-color-input').value;
-      if (/^\d{4}$/.test(friendCode) && friendCode !== yourCode) {
-        const connectedColor = getConnectedColor(friendCode);
+      const connectedColor = localStorage.getItem(friendCode);
+
+      if (/^\d{4}$/.test(friendCode) && friendCode !== yourCode && connectedColor) {
         document.getElementById('connected-color-display').style.display = 'block';
         document.getElementById('connected-color-display').style.backgroundColor = connectedColor;
       } else {
-        alert('Please enter a valid 4-digit code that is not your own.');
+        alert('Please enter a valid 4-digit code that is not your own, or the code may not exist.');
         hideConnectedElements();
       }
 
       // Reset the input field and hide it
       document.getElementById('connect-color-input').value = '';
       document.getElementById('connect-color-input').style.display = 'none';
-    }
-
-    function getConnectedColor(code) {
-      // For demonstration purposes, you can modify this function to retrieve the color associated with the given code
-      // In a real-world scenario, you might use a server/database to store and retrieve this information
-      // For now, it just generates a random color
-      return getRandomColor();
     }
 
     function hideConnectedElements() {
