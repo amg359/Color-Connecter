@@ -62,9 +62,6 @@
       yourCode = generateCode();
       document.getElementById('color-display').style.backgroundColor = yourColor;
       document.getElementById('code-display').textContent = `Your Code: ${yourCode}`;
-
-      // Save the color information to local storage
-      localStorage.setItem(yourCode, yourColor);
     }
 
     function getRandomColor() {
@@ -88,7 +85,7 @@
 
     function validateAndConnect() {
       const friendCode = document.getElementById('connect-color-input').value;
-      const connectedColor = localStorage.getItem(friendCode);
+      const connectedColor = getParameterByName('color');
 
       if (/^\d{4}$/.test(friendCode) && friendCode !== yourCode && connectedColor) {
         document.getElementById('connected-color-display').style.display = 'block';
@@ -105,6 +102,16 @@
 
     function hideConnectedElements() {
       document.getElementById('connected-color-display').style.display = 'none';
+    }
+
+    function getParameterByName(name) {
+      const url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
   </script>
 </body>
